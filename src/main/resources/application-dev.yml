@@ -1,0 +1,13 @@
+server:
+  port: 8081
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb://root :0626@121.196.162.134:27017/lostandfound
+
+lostandfound:
+  jwt:
+    header: Authorization
+    expire: 86400 #秒（一天）
+    secret: r6tjfiy7rht565grh2d14r34aq32n0ffowgo94rhsjn2s5zeh4r8h5d3ss8f5sloen54975354nz #够64个字符位就行
