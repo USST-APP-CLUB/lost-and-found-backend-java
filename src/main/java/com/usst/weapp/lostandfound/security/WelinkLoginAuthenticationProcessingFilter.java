@@ -32,7 +32,7 @@ public class WelinkLoginAuthenticationProcessingFilter extends AbstractAuthentic
         }
         // 提取前端传来的免登授权码code
         String requestJson = ReadRequestBody(request);
-        String code = JSONUtil.getStringJsonValue(requestJson, "code");
+        String code = JSONUtil.getStringValue(requestJson, "code");
         WelinkLoginAuthenticationToken authRequest =  new WelinkLoginAuthenticationToken(null, code);
         return this.getAuthenticationManager().authenticate(authRequest);
     }

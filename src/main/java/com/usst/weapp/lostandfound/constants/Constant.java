@@ -18,4 +18,9 @@ public final class Constant {
     public static final String WELINK_RESPONSE_USER_NOT_ADMIN = "58003";
     public static final String SYS_ROLE_USER = "ROLE_user";
     public static final String SYS_ROLE_ADMIN = "ROLE_admin";
+    public static final String RANDOM_AVATER_API_URL = "https://api.multiavatar.com/";
+    public static final String RANDOM_AVATER_FORMAT_SVG = ".svg";
+    public static final String RANDOM_AVATER_FORMAT_PNG = ".png";
+    public static final String WELINK_GET_PARENT_DEPARTMENTS = "https://open.welink.huaweicloud.com/api/contact/v2/department/parent";
+
 }

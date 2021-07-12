@@ -42,6 +42,6 @@ public class WelinkAccessTokenUtil {
         body.put("client_secret", Constant.WELINK_CLIENT_SECRET);
         String tokenStr = httpClientUtil.postJsonToWelink(Constant.WELINK_GET_ACCESS_TOKEN_URL, body, headers);
         // 提取access_token
-        return JSONUtil.getStringJsonValue(tokenStr, "access_token");
+        return JSONUtil.getStringValue(tokenStr, "access_token");
     }
 }

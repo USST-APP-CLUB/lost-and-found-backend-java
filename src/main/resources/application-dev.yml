@@ -4,7 +4,14 @@ server:
 spring:
   data:
     mongodb:
-      uri: mongodb://root :0626@121.196.162.134:27017/lostandfound
+      authentication-database: admin #lostandfound
+      database: lostandfound
+      uri: mongodb://lfadmin:ad1159@121.196.162.134:27017/lostandfound
+#      uri: mongodb://root:0626@121.196.162.134:27017/lostandfound
+
+
+
+
 
 lostandfound:
   jwt:

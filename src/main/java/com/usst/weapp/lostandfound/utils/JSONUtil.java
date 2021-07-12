@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.IOException;
@@ -19,27 +21,33 @@ import java.util.Map;
  */
 public class JSONUtil {
     private JSONUtil(){}
-    public static String getStringJsonValue(String jsonStr, String key) throws IOException {
-        JsonFactory factory = new JsonFactory();
-        JsonParser parser  = factory.createParser(jsonStr);
-        String result = "";
-        while(!parser.isClosed()){
-            JsonToken jsonToken = parser.nextToken();
-            if(JsonToken.FIELD_NAME.equals(jsonToken)){
-                String fieldName = parser.getCurrentName();
-                jsonToken = parser.nextToken();
-                if(key.equals(fieldName)){
-                    result = parser.getValueAsString();
-                }
-            }
-        }
-        return result;
+    public static String getStringValue(String jsonStr, String key) throws IOException {
+        JsonNode jsonNode = new ObjectMapper().readTree(jsonStr).get(key);
+        return jsonNode.asText();
+        //        JsonFactory factory = new JsonFactory();
+//        JsonParser parser  = factory.createParser(jsonStr);
+//        String result = "";
+//        while(!parser.isClosed()){
+//            JsonToken jsonToken = parser.nextToken();
+//            if(JsonToken.FIELD_NAME.equals(jsonToken)){
+//                String fieldName = parser.getCurrentName();
+//                jsonToken = parser.nextToken();
+//                if(key.equals(fieldName)){
+//                    result = parser.getValueAsString();
+//                }
+//            }
+//        }
+//        return result;
     }
-    public static Map<String, String> getStringJsonValueMap(String jsonStr, String[] keys) throws IOException {
-        Map<String, String> map = new HashMap<>();
 
-        return map;
+    public static String getStringValue(JsonNode jsonNode, String key) {
+        return jsonNode.get(key).asText();
     }
+
+
+
+//    public static String[] getStringArrFromJsonStr
+
 
     public static String convertMapToJsonString(Map<String, String> body) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();

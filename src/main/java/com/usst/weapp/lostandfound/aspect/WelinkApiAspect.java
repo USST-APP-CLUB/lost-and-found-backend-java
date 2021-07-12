@@ -30,11 +30,11 @@ public class WelinkApiAspect {
     @AfterReturning(value = "checkResult()", returning = "returnValue")     // 返回通知
     public void checkCode(JoinPoint jp, Object returnValue) throws IOException {
         String resultStr = returnValue.toString();
-        String code = JSONUtil.getStringJsonValue(resultStr, "code");
+        String code = JSONUtil.getStringValue(resultStr, "code");
         if(!code.equals(Constant.WELINK_RESPONSE_SUCCESS)){
             // 1000 token失效或不可用
             System.out.println(code);
-            String message = JSONUtil.getStringJsonValue(resultStr, "message");
+            String message = JSONUtil.getStringValue(resultStr, "message");
             System.out.println(message);
 
             if(!code.equals(Constant.WELINK_RESPONSE_USER_NOT_ADMIN)){

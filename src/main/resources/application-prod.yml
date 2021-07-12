@@ -4,6 +4,8 @@ server:
 spring:
   data:
     mongodb:
+      authentication-database: admin
+      database: lostandfound
       uri: mongodb://root:0626@localhost:27017/lostandfound
 
 lostandfound:
