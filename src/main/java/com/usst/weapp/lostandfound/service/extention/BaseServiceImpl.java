@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.query.Update;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -23,7 +24,7 @@ import java.util.regex.Pattern;
  */
 public class BaseServiceImpl<T> implements BaseService<T> {
     @Autowired
-    private MongoTemplate mongoTemplate;
+    protected MongoTemplate mongoTemplate;
 
     @Override
     public boolean save(Object entity) {
@@ -152,15 +153,17 @@ public class BaseServiceImpl<T> implements BaseService<T> {
     }
 
     @Override
-    public boolean updateByWelinkId(String[] keys, Object[] values, String welinkId, Class<?> clazz, String collectionName) {
-        Criteria criteria=Criteria.where("userWelinkId").is(welinkId);
-        Query query=new Query(criteria);
+    public boolean update(Map<String, Object> updateConditions, Map<String, Object> queryConditions, String collectionName) {
+        Query query = new Query();
+        for (Map.Entry<String, Object> entry : queryConditions.entrySet()) {
+            query.addCriteria(Criteria.where(entry.getKey()).is(entry.getValue()));
+        }
         Update update=new Update();
-        for (int i = 0; i < keys.length; i++) {
-            update.set(keys[i],values[i]);
+        for (Map.Entry<String, Object> entry : updateConditions.entrySet()) {
+            update.set(entry.getKey(), entry.getValue());
         }
         try{
-            mongoTemplate.updateFirst(query,update,clazz,collectionName);
+            mongoTemplate.updateFirst(query, update, collectionName);
             mongoLogByConsole(MongoMethod.UPDATE,update.toString());
             return true;
         }catch (Exception e){
@@ -168,6 +171,7 @@ public class BaseServiceImpl<T> implements BaseService<T> {
             return false;
         }
     }
+
 
     @Override
     public Object findByMongoId(Serializable id,Class<?> clazz) {
@@ -275,6 +279,15 @@ public class BaseServiceImpl<T> implements BaseService<T> {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public List<T> find(Map<String, Object> queryConditions, Class<T> clazz, String collectionName) {
+        Query query = new Query();
+        for (Map.Entry<String, Object> entry : queryConditions.entrySet()) {
+            query.addCriteria(Criteria.where(entry.getKey()).is(entry.getValue()));
+        }
+        return mongoTemplate.find(query, clazz, collectionName);
     }
 
     @Override
@@ -402,15 +415,15 @@ public class BaseServiceImpl<T> implements BaseService<T> {
     }
 
     @Override
-    public List<T> page(MyPage myPage, Class<?> clazz, String collectionName) {
-        Integer pageSize=myPage.getPageSize()==null?10:myPage.getPageSize();
-        Integer pageNum=myPage.getPageNum()==null?1:myPage.getPageNum();
+    public List<T> page(MyPage myPage, Class<T> clazz, String collectionName) {
+        int pageSize = (myPage.getPageSize() == null) ? 10 : myPage.getPageSize();
+        int pageNum = (myPage.getPageNum() == null) ? 1 : myPage.getPageNum();
         List<T> list;
         try{
-            Query query=new Query(new Criteria());
+            Query query = new Query(new Criteria());
             query.limit(pageSize);
-            query.skip((pageNum - 1) * pageSize);
-            list= (List<T>) mongoTemplate.find(query,clazz,collectionName);
+            query.skip((long) (pageNum - 1) * pageSize);
+            list =  mongoTemplate.find(query,clazz,collectionName);
             mongoLogByConsole(MongoMethod.PAGE,list.toString());
             return list;
         }catch (Exception e){
@@ -542,6 +555,29 @@ public class BaseServiceImpl<T> implements BaseService<T> {
             field.include(fields);
             list= (List<T>) mongoTemplate.find(query,clazz,collectionName);
             mongoPage.setMongoPage(pageNum,pageSize,total,getTotalSum(total,pageSize),list);
+            mongoLogByConsole(MongoMethod.MONGOPage,mongoPage.toString());
+            return mongoPage;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public MongoPage<T> getFirstPage(MyPage myPage, Class<T> clazz, String collectionName) {
+        int pageSize = (myPage.getPageSize() == null) ? 10 : myPage.getPageSize();
+        int pageNum = (myPage.getPageNum() == null) ? 10 : myPage.getPageNum();
+        MongoPage<T> mongoPage = null;
+        long total;
+        List<T> list;
+        try{
+            Query query=new Query(new Criteria());
+            //返回总记录数
+            total=mongoTemplate.count(query,clazz);
+            query.limit(pageSize);
+            query.skip((long) (pageNum - 1) * pageSize);
+            list= mongoTemplate.find(query,clazz,collectionName);
+            mongoPage = new MongoPage<>(pageNum, pageSize, total, getTotalSum(total, pageSize), list);
             mongoLogByConsole(MongoMethod.MONGOPage,mongoPage.toString());
             return mongoPage;
         }catch (Exception e){
@@ -896,11 +932,11 @@ public class BaseServiceImpl<T> implements BaseService<T> {
      * @return
      */
     private long getTotalSum(long total,Integer pageSize){
-        long totalSum=0;
-        if(total%pageSize==0){//能够整除
-            totalSum=total/pageSize;
+        long totalSum = 0;
+        if(total % pageSize == 0){//能够整除
+            totalSum = total / pageSize;
         }else{
-            totalSum=total/pageSize+1;
+            totalSum = total / pageSize + 1;
         }
         return totalSum;
     }
@@ -909,7 +945,7 @@ public class BaseServiceImpl<T> implements BaseService<T> {
      * @param method
      * @param toString
      */
-    private void mongoLogByConsole(String method,String toString){
+    protected void mongoLogByConsole(String method,String toString){
         String outPut="MongoDB";
         switch (method){
             case MongoMethod.INSERT:

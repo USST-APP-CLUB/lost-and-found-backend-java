@@ -6,6 +6,7 @@ import com.usst.weapp.lostandfound.model.vo.MyPage;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 public interface BaseService<T> {
 
@@ -32,7 +33,7 @@ public interface BaseService<T> {
         boolean updateById(String[] keys, Object[] values, Serializable id, Class<?> clazz);
         boolean updateById(String[] keys,Object[] values,Serializable id,String collectionName);
         boolean updateById(String[] keys,Object[] values,Serializable id,Class<?> clazz,String collectionName);
-        boolean updateByWelinkId(String[] keys,Object[] values,String welinkId, Class<?> clazz ,String collectionName);
+        boolean update(Map<String, Object> updateConditions, Map<String, Object> queryConditions, String collectionName);
         /**
          * 查
          * @finById 就是根据id查询单条记录
@@ -46,6 +47,7 @@ public interface BaseService<T> {
         Object findByMongoId(Serializable id,String[] fields,Class<?> clazz,String collectionName);
         List<T> findByMap(String[] keys,Object[] values,Class<?> clazz);
         List<T> findByMap(String[] keys,Object[] values,Class<?> clazz,String collectionName);
+        List<T> find(Map<String, Object> queryConditions, Class<T> clazz, String collectionName);
         List<T> findByMap(String[] keys,Object[] values,String[] fields,Class<?> clazz);
         List<T> findByMap(String[] keys,Object[] values,String[] fields,Class<?> clazz,String collectionName);
         List<T> findAll(Class<?> clazz);
@@ -56,7 +58,7 @@ public interface BaseService<T> {
          * 分页---无总记录数，只查一次
          */
         List<T> page(MyPage myPage, Class<?> clazz);
-        List<T> page(MyPage myPage, Class<?> clazz,String collectionName);
+        List<T> page(MyPage myPage, Class<T> clazz,String collectionName);
         List<T> page(MyPage myPage, String[] fields,Class<?> clazz);
         List<T> page(MyPage myPage, String[] fields,Class<?> clazz,String collectionName);
         /**
@@ -66,6 +68,8 @@ public interface BaseService<T> {
         MongoPage page(MongoPage mongoPage, Class<?> clazz,String collectionName);
         MongoPage page(MongoPage mongoPage,String[] fields,Class<?> clazz);
         MongoPage page(MongoPage mongoPage,String[] fields, Class<?> clazz,String collectionName);
+
+        MongoPage<T> getFirstPage(MyPage myPage, Class<T> clazz,String collectionName);
 
         MongoPageByMapVO pageByMap(MongoPageByMapVO mongoPageByMapVo, Class<?> clazz, String collectionName);
 

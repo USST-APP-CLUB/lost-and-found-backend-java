@@ -29,7 +29,7 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
         ObjectMapper mapper = new ObjectMapper();
         e.printStackTrace();
         System.out.println(e.getMessage());
-        Response result = Response.fail("welink免密登陆失败，请稍后重试或联系管理员");
+        Response result = Response.fail("welink免密登陆失败，请稍后重试。如仍无法登录，请联系管理员");
         String responseJson = mapper.writeValueAsString(result);
         ServletOutputStream outputStream = response.getOutputStream();
         outputStream.write(responseJson.getBytes("UTF-8"));

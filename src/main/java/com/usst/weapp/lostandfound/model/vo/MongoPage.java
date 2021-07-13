@@ -2,6 +2,7 @@ package com.usst.weapp.lostandfound.model.vo;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import java.util.List;
 
@@ -14,15 +15,19 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class MongoPage<T> extends MyPage{
-    //	protected Integer pageSize;
-//	protected Integer pageNum;
     protected long total;//总记录数
     protected long totalSum;//总页数
     protected List<T> list;//分页结果
     public MongoPage(Integer pageNum,Integer pageSize,long total,long totalSum,List<T> list){
-        this.pageNum=pageNum==null?1:pageNum;
-        this.pageSize=pageSize==null?10:pageSize;
+        this.pageNum = (pageNum == null) ? 1 : pageNum;
+        this.pageSize = (pageSize == null) ? 10 : pageSize;
     }
+
+    public MongoPage(Integer pageNum, Integer pageSize){
+        this.pageNum = (pageNum == null) ? 1 : pageNum;
+        this.pageSize = (pageSize == null) ? 10 : pageSize;
+    }
+
     public void setMongoPage(long total,long totalSum,List<T> list){
         this.total=total;
         this.totalSum=totalSum;

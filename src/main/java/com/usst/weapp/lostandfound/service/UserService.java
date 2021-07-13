@@ -8,9 +8,8 @@ import java.util.Map;
 
 
 public interface UserService extends BaseService<UserDO> {
-//    List<UserDO> listByMap(Map<String, Object> queryConditions);
-//
-//    UserDO insertUser(UserDO user);
-//
-//    long updateByMongoDBId(String mongoDBId, Map<String, Object> updateConditions);
+
+
+    UserDO getUserByWelinkId(String welinkId);
+
 }

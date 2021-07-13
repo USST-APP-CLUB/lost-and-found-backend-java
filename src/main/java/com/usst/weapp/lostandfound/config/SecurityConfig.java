@@ -1,9 +1,6 @@
 package com.usst.weapp.lostandfound.config;
 
-import com.usst.weapp.lostandfound.security.LoginFailureHandler;
-import com.usst.weapp.lostandfound.security.LoginSuccessHandler;
-import com.usst.weapp.lostandfound.security.WelinkLoginAuthenticationProcessingFilter;
-import com.usst.weapp.lostandfound.security.WelinkLoginAuthenticationProvider;
+import com.usst.weapp.lostandfound.security.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -54,11 +51,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //    LoginSuccessHandler loginSuccessHandler;
 //
 
-//    @Autowired
-//    JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-//
-//    @Autowired
-//    JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    @Autowired
+    JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
+    @Autowired
+    JWTAccessDeniedHandler jwtAccessDeniedHandler;
 //
 //    @Autowired
 //    UserDetailServiceImpl userDetailService;
@@ -66,11 +63,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //    @Autowired
 //    JwtLogoutSuccessHandler jwtLogoutSuccessHandler;
 //
-//    @Bean
-//    JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-//        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager());
-//        return jwtAuthenticationFilter;
-//    }
+    @Bean
+    JWTAuthenticationFilter jwtAuthenticationFilter() throws Exception {
+        JWTAuthenticationFilter jwtAuthenticationFilter = new JWTAuthenticationFilter(authenticationManager());
+        return jwtAuthenticationFilter;
+    }
 
 //    @Bean
 //    BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -83,7 +80,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/login",
             "/welink/login",
             "/logout",
-            "/test/**",
+//            "/test/**",
 
             // swagger ui
             "/v2/api-docs",
@@ -116,26 +113,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
             // 禁用session
         http.sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
             // 配置拦截规则
-            .and()
-            .authorizeRequests()
+        http.authorizeRequests()
             .antMatchers(URL_WHITELIST).permitAll()
-            .anyRequest().authenticated()
+            .anyRequest().authenticated();
 
             // 异常处理器
-//            .and()
-//            .exceptionHandling()
-//                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-//                .accessDeniedHandler(jwtAccessDeniedHandler)
+        http.exceptionHandling()
+            .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+            .accessDeniedHandler(jwtAccessDeniedHandler);
 
             // 配置自定义的过滤器
-//                .and()
-//                .addFilter(jwtAuthenticationFilter())
-//                .addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class)
+        http.addFilter(jwtAuthenticationFilter());
 
-        ;
+
 
     }
 

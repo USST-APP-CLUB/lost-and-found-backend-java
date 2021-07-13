@@ -24,29 +24,25 @@ public class JSONUtil {
     public static String getStringValue(String jsonStr, String key) throws IOException {
         JsonNode jsonNode = new ObjectMapper().readTree(jsonStr).get(key);
         return jsonNode.asText();
-        //        JsonFactory factory = new JsonFactory();
-//        JsonParser parser  = factory.createParser(jsonStr);
-//        String result = "";
-//        while(!parser.isClosed()){
-//            JsonToken jsonToken = parser.nextToken();
-//            if(JsonToken.FIELD_NAME.equals(jsonToken)){
-//                String fieldName = parser.getCurrentName();
-//                jsonToken = parser.nextToken();
-//                if(key.equals(fieldName)){
-//                    result = parser.getValueAsString();
-//                }
-//            }
-//        }
-//        return result;
+    }
+
+    public static Integer getIntNumberValue(String jsonStr, String key) throws JsonProcessingException {
+        JsonNode jsonNode = new ObjectMapper().readTree(jsonStr).get(key);
+        assert jsonNode.isIntegralNumber();
+//        assert jsonNode.isIntegralNumber() : "不可以用 .asInt() 方法解析非整型值";
+        return jsonNode.asInt();
+    }
+
+    public static Boolean getBooleanValue(String jsonStr, String key) throws JsonProcessingException {
+        JsonNode jsonNode = new ObjectMapper().readTree(jsonStr).get(key);
+        assert jsonNode.isBoolean();
+        return jsonNode.asBoolean();
     }
 
     public static String getStringValue(JsonNode jsonNode, String key) {
         return jsonNode.get(key).asText();
     }
 
-
-
-//    public static String[] getStringArrFromJsonStr
 
 
     public static String convertMapToJsonString(Map<String, String> body) throws JsonProcessingException {
@@ -56,5 +52,10 @@ public class JSONUtil {
             rootNode.put(entry.getKey(), entry.getValue());
         }
         return objectMapper.writeValueAsString(rootNode);
+    }
+
+    public static String objToStr(Object obj) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(obj);
     }
 }

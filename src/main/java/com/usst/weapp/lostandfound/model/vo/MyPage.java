@@ -15,13 +15,13 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class MyPage implements Serializable {
     private static final long serialVersionUID = 1L;
-    //当前页码
+//    //当前页码
     protected Integer pageNum;
-    //页大小
+//    //页大小
     protected Integer pageSize;
 
     public MyPage(Integer pageNum,Integer pageSize){
-        this.pageNum=pageNum==null?1:pageNum;
-        this.pageSize=pageSize==null?10:pageSize;
+        this.pageNum = (pageNum == null) ? 1 : pageNum;
+        this.pageSize = (pageSize == null) ? 10 : pageSize;
     }
 }
