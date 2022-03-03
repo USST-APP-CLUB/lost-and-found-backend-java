@@ -28,7 +28,9 @@ import org.springframework.stereotype.Component;
 
 
 import javax.net.ssl.SSLContext;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -191,6 +193,27 @@ public class HttpClientUtil {
         HttpClientUtils.closeQuietly(response);
         return resultStr;
     }
+
+    public void downloadImg(String url) throws IOException {
+        CloseableHttpClient closeableHttpClient = httpClientBuilder.build();
+        HttpGet httpGet = new HttpGet(url);
+        CloseableHttpResponse response = null;
+        System.out.println(url);
+        System.out.println(123);
+        response = closeableHttpClient.execute(httpGet);
+        System.out.println(456);
+        HttpEntity entity = response.getEntity();
+        String str = entity.toString();
+        System.out.println(str);
+//        byte[] bArray = EntityUtils.toByteArray(entity);
+//        OutputStream os = new FileOutputStream("D:\\xio习\\3↓计算机专业课程设计\\lost-and-found-backend-java\\src\\main\\resources\\static\\img\\text.png");
+//        os.write(bArray, 0, bArray.length);
+//        os.flush();
+//        os.close();
+        HttpClientUtils.closeQuietly(response);
+    }
+
+
 
     private static ConnectionSocketFactory trustHttpsCertificates() {
         SSLContextBuilder sslContextBuilder = new SSLContextBuilder();

@@ -80,7 +80,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/login",
             "/welink/login",
             "/logout",
-//            "/test/**",
+            "/test/**",
 
             // swagger ui
             "/v2/api-docs",

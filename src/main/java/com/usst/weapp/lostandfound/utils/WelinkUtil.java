@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.usst.weapp.lostandfound.constants.Constant;
 import com.usst.weapp.lostandfound.model.entity.UserDO;
+import com.usst.weapp.lostandfound.model.mongomap.MongoMap;
 import com.usst.weapp.lostandfound.model.mongomap.WelinkAccessToken;
 import com.usst.weapp.lostandfound.service.KeyValueService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,12 +51,13 @@ public class WelinkUtil {
     private String getAccessTokenFromDB(){
         Map<String, Object> queryConditions = new HashMap<>();
         queryConditions.put("key", "access_token");
-        List<WelinkAccessToken> list = keyValueService.find(queryConditions, WelinkAccessToken.class, "key_value");
+        List<MongoMap> list = keyValueService.find(queryConditions, MongoMap.class, "key_value");
+//        System.out.println(list);
         if (list == null || list.size() == 0) return null;
 //        System.out.println(list == null);
-        WelinkAccessToken accessToken = list.get(0);
+        WelinkAccessToken accessToken = (WelinkAccessToken) list.get(0).getValue();
 //        assert accessToken != null;
-        System.out.println(accessToken);
+        System.out.println("db 命中" + accessToken.getAccessToken());
         LocalDateTime nowTime = LocalDateTime.now();
         LocalDateTime expireTime = timeUtil.convertStringToTime(accessToken.getExpireTimeStr());
         if (nowTime.isAfter(expireTime)) return null;
@@ -77,8 +79,14 @@ public class WelinkUtil {
         LocalDateTime expireTime = LocalDateTime.now().plusSeconds(expire_in - 300);
         String format = "yyyy-MM-dd HH:mm:ss";
         String expireTimeStr = expireTime.format(DateTimeFormatter.ofPattern(format));
-        WelinkAccessToken welinkAccessToken = new WelinkAccessToken("access_token" ,access_token, expireTimeStr);
-        keyValueService.save(welinkAccessToken, "key_value");
+        WelinkAccessToken welinkAccessToken = new WelinkAccessToken(access_token, expireTimeStr);
+        MongoMap mongoMap = new MongoMap("access_token", welinkAccessToken);
+        Map<String, Object> queryConditions = new HashMap<>();
+        Map<String, Object> updateConditions = new HashMap<>();
+        queryConditions.put("key", "access_token");
+        updateConditions.put("value", mongoMap);
+        keyValueService.update(updateConditions, queryConditions, "key_value");
+//        keyValueService.save(welinkAccessToken, "key_value");
         return access_token;
     }
 

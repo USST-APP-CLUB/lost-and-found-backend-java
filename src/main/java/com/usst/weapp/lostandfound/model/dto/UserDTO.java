@@ -18,13 +18,13 @@ import org.apache.catalina.User;
 @NoArgsConstructor
 public class UserDTO {
     private String nickname;
-    private String randomAvatarUrl;
+    private String avatarUrl;
 //    private String userAuthority;
     private Boolean isAdmin;
 
     public UserDTO (UserDO user){
         this.nickname = user.getNickname();
-        this.randomAvatarUrl = user.getRandomAvatarUrl();
+        this.avatarUrl = user.getRandomAvatarUrl();
 //        this.userAuthority = user.getAuthorityStr();
         this.isAdmin = user.getAuthorityStr().equals(Constant.SYS_ROLE_ADMIN);
     }

@@ -65,6 +65,7 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
 
             outputStream.flush();
             outputStream.close();
+            return;
         }
 
         if(jwtUtils.isTokenExpired(claim)){
@@ -72,12 +73,13 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
 //            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             ServletOutputStream outputStream = response.getOutputStream();
 
-            Response res = Response.fail(ResultCodeEnum.JWT_EXPIRE);
+            Response res = Response.fail(ResultCodeEnum.JWT_ERROR, "token过期");
             ObjectMapper mapper = new ObjectMapper();
             outputStream.write(mapper.writeValueAsString(res).getBytes("UTF-8"));
 
             outputStream.flush();
             outputStream.close();
+            return;
         }
         String userWelinkId = claim.getSubject();  // username 就是userId
         System.out.println("jwt filter "+userWelinkId);
@@ -85,7 +87,7 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
         Map<String, Object> queryConditions = new HashMap<>();
         queryConditions.put("userWelinkId", userWelinkId);
         List<UserDO> users = userService.find(queryConditions, UserDO.class, "user");
-        if (users.size() != 1) throw new MyException(ResultCodeEnum.JWT_ERROR,"JWT异常导致无法从数据库中加载用户");
+        if (users.size() != 1) throw new MyException(ResultCodeEnum.JWT_ERROR,"token异常");
         UserDO user = users.get(0);
 
         // 获取用户权限

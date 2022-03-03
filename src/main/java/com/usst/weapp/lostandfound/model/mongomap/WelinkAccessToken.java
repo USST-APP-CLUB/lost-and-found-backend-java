@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WelinkAccessToken {
-    private String key;
+//    private String key;
     private String accessToken;
     private String expireTimeStr;
 }
